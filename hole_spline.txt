@@ -1,0 +1,26 @@
+# 2-D boundary description
+# "#" is the comment line signal
+# go ccw for externl and CW for internal boundaries
+#*LOOP represents a new boundary curve. 
+#each segement has Number of points
+#points x,y,x,y,x,y etc 
+#*END is the end of the file
+*LOOP
+POLYLINE, -2,-2, 0.1, 2,-2, 0.1,  0, 2, 0.1, -2,-2
+# Polygonal Line:  the syntax is POLYLINE, x1, y1, distance between points, x2, y2, ... if the last is the same as the first it is a closed loop
+#*LOOP
+#CIRCLE,0.07, 0,-0.75,0.5,360,0
+# Circular arc: syntax is  CIRCLE, distance between points , center_x, center_y, radius, start angle(deg), end angle(deg) 
+# cw verssus ccw is decided by start and end angles. 
+
+*LOOP
+SPLINE,40, 0, -0.5,  -0.5, 0,  0, 0.5,  0.5,0,  0,-0.5
+# spline interterpolation: syntax is  number of points, location of knots (final point= initial poinf for smooth curve 
+
+*REFINEMENT_REGIONS
+# this is for mesh refinement  THE FIRST ONE IS THE BOUNDING BOX AND IT HAS TO BE THERE 
+POLYLINE, 1,  -2.1, -2.1,0.1,    2.1, -2.1,0.1,    0,2.1,0.1, -2.1,-2.1
+# the first one has to be a BOUNDING BOK or curve that contains the whole figure, THis is what controls how to ditribute the points 
+# sytax is the same as for LOOP except that there is a level indicator for nesting (level 1 = outer level level 2 is a subset of the region enclosed by level 1 etc. 
+#CIRCLE,2, 0.07, 0,-0.75,1,360,0
+*END

@@ -1,0 +1,23 @@
+# 2-D boundary description
+# "#" is the comment line signal
+# *SIZE= How many loops do we have in the boundary :
+# go ccw for externl and CW for internal boundaries
+#*LOOP is to list the segents in a loops 
+# Dont put comments in the loop section 
+#each segement has Number of points
+#points x,y,x,y,x,y etc 
+#*END is the end of the file
+*LOOP
+POLYLINE, 0,-2, 0.1, 1,-2, 0.1,  2,-2, 0.1,  2, 2, 0.1,   -2,2,0.1,  -2,1, 0.1, -2,0
+CIRCLE, 0.1, -2,-2,2, 90,0
+# this is a partial line with a end cut 
+#*LOOP
+#1
+#CIRCLE,0.07, 0,-0.75,0.5,360,0
+#*LOOP
+#1
+#SPLINE,40, 0, -0.5,  -0.5, 0,  0, 0.5, 0.5,-0, 0,-0.5
+*REFINEMENT_REGIONS
+POLYLINE, 1, -2.1,-2.1, 0.1, 2.1,-2.1, 0.1,  2.1, 2.1, 0.1,   -2.1,2.1
+#CIRCLE, 2, 0.07, -2,-2,3, 0,360
+*END
