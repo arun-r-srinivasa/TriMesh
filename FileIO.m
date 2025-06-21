@@ -78,7 +78,8 @@
             end
              fclose(fid);
         end
-        function saveMyDataToFile(varargin)
+
+         function saveToFile(varargin)
             % saveMyDataToFile: Prompts the user for a file name/location and writes data to that file.
             %
             %   dataToWrite: (optional) data string or array you want to write out.
@@ -146,6 +147,6 @@
             
             fprintf('Data saved to: %s\n', fullFilePath);
                 
-        end 
+        end  
     end
 end

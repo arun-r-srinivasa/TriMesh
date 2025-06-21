@@ -201,7 +201,7 @@ classdef Mesher2D<handle
                 obj.regions{i}.R0=R;
             end
 
-            xyin=cell(n_regions); % these are the interior points 
+            xy={}; % these are the interior points 
             for i=1 : n_regions
                 R=obj.regions{i}.R0;
                 XYi=obj.regions{i}.xyr; % boundary of the region 
@@ -234,18 +234,17 @@ classdef Mesher2D<handle
                         inside=logical(inside.*(~in)); % keep only the ones that are in the region but not in its subsets. 
                     end
                 end
-                xyin{i}=xy(:,inside);
+                xyin=[xyin,xy(:,inside)];
             end
-            % now concatenate into a matrix
-            xytot=[xyin{:}];
+
             % finally trim all the points that are outside the actual deomain 
-            [in,on]=inpolygon(xytot(1,:),xytot(2,:),obj.xyb(1,1:end-1),obj.xyb(2,1:end-1));
+            [in,on]=inpolygon(xyin(1,:),xyin(2,:),obj.xyb(1,1:end-1),obj.xyb(2,1:end-1));
             inside=logical(in.*(~on));
 
             idx=find(~isnan(obj.xyb(1,:)));
             % list the coords with the first being the boundary coordinates
             obj.n_bdry_nodes=length(idx);
-            obj.coords=[obj.xyb(1,idx)',obj.xyb(2,idx)';xytot(:,inside)'];
+            obj.coords=[obj.xyb(1,idx)',obj.xyb(2,idx)';xyin(:,inside)'];
             obj.n_bdry_nodes=length(idx);
         end
 
@@ -321,26 +320,26 @@ classdef Mesher2D<handle
              TR=triangulation(obj.elements, obj.coords);
              % find the elements to which the boundaries are attached; 
              bdry_elements=edgeAttachments(TR,obj.bdry_edges);
-             removed_nodes={};
+             removed_nodes=[];
             for i=1:numel(bdry_elements)
                 j=bdry_elements{i};
                 node_numbers=obj.elements(j,:);
                 % find the nodes in the interior and the boundary 
-                idx=(node_numbers>obj.n_bdry_nodes);
-                jdx=(node_numbers<=obj.n_bdry_nodes);
+                idx=find(node_numbers>obj.n_bdry_nodes);
+                jdx=find(node_numbers<=obj.n_bdry_nodes);
                 Rs=obj.coords(node_numbers,:);
                 % find the area using the shoelace formaula
                 area=0.5*abs(Rs(1,1)*(Rs(2,2)-Rs(3,2))+Rs(2,1)*(Rs(3,2)-Rs(1,2))+Rs(3,1)*(Rs(1,2)-Rs(2,2)));
                 d=norm(Rs(jdx(1),:)-Rs(jdx(2),:));
                 if(area/d^2<0.3) % remove nodes that form very "flat" triangles 
-                    removed_nodes{i}=node_numbers(idx);
+                    removed_nodes=[removed_nodes,node_numbers(idx)];
                 end
             end
             % remove the nodes that are trapped inside other triangles 
             trapped_nodes=find(obj.degree<=4);
             inside=(trapped_nodes>obj.n_bdry_nodes);
-            all_removed_nodes=[removed_nodes{:},trapped_nodes(inside)'];
-            obj.coords(all_removed_nodes,:)=[];
+            removed_nodes=[removed_nodes,trapped_nodes(inside)'];
+            obj.coords(removed_nodes,:)=[];
             
         end
 %--------------------------------------------------------------------------

@@ -38,7 +38,7 @@ M.spreadPoints(500);
     % crowded regions will push the points to less dense regions. 
 M.showMeshQuality;
     % This displays the mesh and  computes and shows various quality measures on the mesh. 
-FileIO.saveMyDataToFile(M.coords,M.elements);
+FileIO.saveToFile(M.coords,M.elements);
     % this saves to a file specifice by you and stores only nodal
     % coorditants and elements. 
 
